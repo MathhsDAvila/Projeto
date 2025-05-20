@@ -1,22 +1,16 @@
+// components/Header/index.tsx
 'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
 import { RiUserLine, RiUserFill, RiMenuLine } from 'react-icons/ri'
 import styles from './HeaderPages.module.css'
-import Sidebar from '../Sidebar' // Ajuste o caminho conforme sua estrutura
-
-interface HeaderPagesProps {
-  // Remova onProfileClick pois vamos gerenciar o estado internamente
-}
+import Sidebar from '../Sidebar'
+import { useAuth } from '../../../contexts/AuthContext'
 
 const HeaderPages = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { user, isLoading } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
-  const handleAuthClick = () => {
-    setIsLoggedIn(!isLoggedIn)
-  }
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
@@ -36,12 +30,11 @@ const HeaderPages = () => {
             <ul className={styles.navLinks}>
               <li>
                 <Link 
-                  href={isLoggedIn ? "/profile" : "/login"} 
-                  aria-label={isLoggedIn ? "Perfil" : "Fazer login"}
-                  onClick={handleAuthClick}
+                  href={user ? "/profile" : "/login"} 
+                  aria-label={user ? "Perfil" : "Fazer login"}
                   className={styles.authLink}
                 >
-                  {isLoggedIn ? (
+                  {user ? (
                     <RiUserFill size={24} className={styles.headerIcon} />
                   ) : (
                     <RiUserLine size={24} className={styles.headerIcon} />
@@ -62,10 +55,10 @@ const HeaderPages = () => {
         </nav>
       </header>
 
-      {/* Sidebar Component */}
       <Sidebar 
         isOpen={sidebarOpen} 
-        onClose={() => setSidebarOpen(false)} 
+        onClose={() => setSidebarOpen(false)}
+        user={user}
       />
     </>
   )
